@@ -55,7 +55,7 @@ def load_data():
         return data
 
 def save_data(data):
-    with open('patients.json','r') as f:
+    with open('patients.json','w') as f:
         json.dump(data,f)
     
 
@@ -146,3 +146,18 @@ def update_patient(patient_id: str, patient_update: PatientUpate):
     save_data(data)
 
     return JSONResponse(status_code=200, content={'message':'Patient Updated'})
+
+@app.delete('/delete/{patient_id}')
+def delete_patient(patient_id: str):
+
+    #load data
+    data = load_data()
+
+    if patient_id not in data:
+        raise HTTPException(status_code=404, detail='Patient Not Found')
+
+    del data[patient_id]
+
+    save_data(data)
+
+    return JSONResponse(status_code=200, content={'message': 'Patient Deleted Successfully!'})
